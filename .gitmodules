@@ -1,0 +1,3 @@
+[submodule "selenium2"]
+  path = util/selenium2
+  url = git://github.com/loudpumpkins/selenium2

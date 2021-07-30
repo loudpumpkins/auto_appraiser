@@ -6,6 +6,21 @@ __pycache__/
 # C extensions
 *.so
 
+# Project specific
+*.csv
+*.xlsx
+
+media/*
+media/csv_files/*
+static/*
+
+!media/.gitkeep
+!media/csv_files/*
+!static/.gitkeep
+
+migrations/
+.idea/
+
 # Distribution / packaging
 .Python
 build/
