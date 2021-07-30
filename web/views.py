@@ -23,7 +23,7 @@ def get_data(request, file):
 	else:
 		return HttpResponseNotFound('<h1>Data not found</h1>')
 
-	with open(file_path, mode='r', encoding='ansi') as fd:
+	with open(file_path, mode='r', encoding='utf-8') as fd:
 		reader = csv.DictReader(fd, fieldnames=csv_fieldnames)
 		json_pretty = json.dumps([row for row in reader], indent=4)
 	return HttpResponse(json_pretty, content_type="application/json")
