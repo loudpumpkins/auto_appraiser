@@ -1,6 +1,7 @@
 import csv
 import json
 
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotFound
 
 from web.models import Data
@@ -16,12 +17,13 @@ def get_data(request, file):
 	                  'trim', 'colour', 'description']
 	csv_files = Data.objects.all().first()
 	if file.lower() == 'raw':
-		csv_file = csv_files.raw_csv.open(mode='r')
+		file_path = settings.MEDIA_ROOT / csv_files.raw_csv.path
 	elif file.lower() == 'clean':
-		csv_file = csv_files.clean_csv.open(mode='r')
+		file_path = settings.MEDIA_ROOT / csv_files.clean_csv.path
 	else:
 		return HttpResponseNotFound('<h1>Data not found</h1>')
 
-	reader = csv.DictReader(csv_file, fieldnames=csv_fieldnames)
-	json_pretty = json.dumps([row for row in reader], indent=4)
+	with open(file_path, mode='r', encoding='ansi') as fd:
+		reader = csv.DictReader(fd, fieldnames=csv_fieldnames)
+		json_pretty = json.dumps([row for row in reader], indent=4)
 	return HttpResponse(json_pretty, content_type="application/json")
