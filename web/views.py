@@ -12,14 +12,21 @@ def index(request):
 
 
 def get_data(request, file):
-	csv_fieldnames = ['link', 'price', 'make', 'model', 'year', 'kilometres',
-	                  'body_type', 'drivetrain', 'transmission', 'fuel_type',
-	                  'trim', 'colour', 'description']
 	csv_files = Data.objects.all().first()
 	if file.lower() == 'raw':
 		file_path = settings.MEDIA_ROOT / csv_files.raw_csv.path
+		csv_fieldnames = ['link', 'price', 'make', 'model', 'year',
+		                  'kilometres', 'body_type', 'drivetrain',
+		                  'transmission', 'fuel_type', 'trim', 'colour',
+		                  'description']
 	elif file.lower() == 'clean':
 		file_path = settings.MEDIA_ROOT / csv_files.clean_csv.path
+		csv_fieldnames = ['price', 'kilometres', 'year', 'other', 'crosstour',
+		                  'fit', 'civic', 'ridgeline', 'del sol', 'accord',
+		                  'passport', 'odyssey', 'insight', 's2000', 'cr-z',
+		                  'accord crosstour', 'hr-v', 'element', 'cr-v',
+		                  'prelude', 'pilot', 'sport', 'leather', 'automatic',
+		                  'awd']
 	else:
 		return HttpResponseNotFound('<h1>Data not found</h1>')
 
