@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotFound
 from django.template.response import TemplateResponse
 
-from util.predict import predict_price
+from web.apps import WebConfig
 from web.models import Data
 
 
@@ -41,7 +41,8 @@ def index(request):
 		if form['leather']:
 			args.append('leather')
 
-		value = predict_price(form['year'], form['kilometres'], form['model'], *args)
+		value = WebConfig.predictor.predict(form['year'], form['kilometres'],
+		                                    form['model'], *args)
 		message = '${:,.2f} CAD'.format(value)
 
 	return TemplateResponse(request, 'index.html', {
