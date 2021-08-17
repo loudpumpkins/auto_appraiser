@@ -3,12 +3,51 @@ import json
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotFound
+from django.template.response import TemplateResponse
 
+from util.predict import predict_price
 from web.models import Data
 
 
 def index(request):
-	pass
+
+	message = False
+	form = {
+		'model': False,
+		'year': False,
+		'kilometres': False,
+		'transmission': False,
+		'drivetrain': False,
+		'sport': False,
+		'leather': False,
+	}
+
+	if request.method == 'POST':
+		form['model'] = request.POST['model']
+		form['year'] = request.POST['year']
+		form['kilometres'] = request.POST['kilometres']
+		form['transmission'] = request.POST['transmission']
+		form['drivetrain'] = request.POST['drivetrain']
+		form['sport'] = request.POST.get('sport', False)
+		form['leather'] = request.POST.get('leather', False)
+
+		args = []
+		if form['transmission'] == 'automatic':
+			args.append('automatic')
+		if form['drivetrain'] == 'awd':
+			args.append('awd')
+		if form['sport']:
+			args.append('sport')
+		if form['leather']:
+			args.append('leather')
+
+		value = predict_price(form['year'], form['kilometres'], form['model'], *args)
+		message = '${:,.2f} CAD'.format(value)
+
+	return TemplateResponse(request, 'index.html', {
+		'message': message,
+		'form': form,
+	})
 
 
 def get_data(request, file):
