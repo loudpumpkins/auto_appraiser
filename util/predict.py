@@ -1,5 +1,6 @@
 import os
-import tensorflow as tf
+import pandas as pd
+from pycaret.regression import *
 
 
 class Predictor(object):
@@ -13,10 +14,10 @@ class Predictor(object):
 	          # other features
 	          'sport', 'leather', 'automatic', 'awd']
 	model_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-	                          'dnn_model')
+	                          'auto_appraiser_rf')
 
 	def __init__(self):
-		self.dnn_model = tf.keras.models.load_model(self.model_path)
+		self.model = load_model(self.model_path)
 
 	def predict(self, year, kilometres, model, *args):
 		vehicle = [0 for _ in range(len(self.header))]
@@ -26,5 +27,6 @@ class Predictor(object):
 		for arg in args:
 			vehicle[self.header.index(arg)] = 1
 
-		prediction = self.dnn_model.predict([vehicle]).flatten()
-		return prediction[0]
+		df_predict = pd.DataFrame([vehicle], columns=self.header)
+		prediction = predict_model(self.model, data=df_predict)
+		return prediction.at[0, 'Label']
